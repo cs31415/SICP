@@ -1,0 +1,19 @@
+(define (gcd a b)
+  (begin
+    (display (string-append "(gcd " (number->string a) " " (number->string b) ")"))
+    (newline)
+    (if (= 0 b)
+      a
+      (gcd b (remainder a b)))))
+
+(gcd 8 3)
+
+(gcd 8 3)
+(gcd 3 2)
+(gcd 2 1)
+(gcd 1 0)
+
+= 4 calls
+
+
+(gcd)

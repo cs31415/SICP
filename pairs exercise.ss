@@ -1,0 +1,8 @@
+(define (cons1 a b) (* (expt 2 a) (expt 3 b)))
+(cons1 2 3)
+(define (car1 z) (cond ((odd? z) 0)
+                      (else (+ 1 (car1 (/ z 2))))))
+(car1 108)
+(define (cdr1 z) (cond ((= 0 (remainder z 3)) (+ 1 (cdr1 (/ z 3))))
+                      (else 0)))
+(cdr1 108)

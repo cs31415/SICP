@@ -1,0 +1,174 @@
+; Scheme is weakly typed with dynamic type checking and lexical scope rules
+; Scheme is case-sensitive
+
+; Comments
+; This is a comment
+
+"types"
+"boolean"
+#t
+#f
+"numbers"
+10
+3.1415
+pi
+e
+
+"strings"
+"a string"
+
+"lists"
+'(1 2 3 4)
+'(a b c d)
+
+"functions"
+(define (add x y) (+ x y))
+(add 1 5)
+
+"operators"
+(/ 36 6 2)
+(+ 1 2 3 4 5)
+(+ (* 2 3) 5)
+(quotient 5 2)
+(modulo 5 2)
+
+"predicates"
+(boolean? 1)
+(boolean? #t)
+(boolean? #f)
+(number? 10)
+(number? #t)
+(symbol? "a")
+(procedure? 1)
+(null? 1)
+(null? null)
+(zero? 0)
+(odd? 10)
+(even? 4)
+
+"Lists"
+(list 1 2 3 5) ; equivalent to '(1 2 3 5)
+(cons 1 2) ; returns a dotted pair
+(cons '1 '(2 3 4))
+'(1 . 2) ; dotted pair
+(car '(1 2 3)) ; returns 1st member of list
+(cdr '(1 2 3)) ; returns rest of the list
+(length '(1 2 4 5 6))
+(reverse '(a b c d))
+(append '(1 2 3) '(4 5 6))
+
+"Logical operators"
+(not #t)
+(and #t #f)
+(or  #f #t)
+
+"Relational operators"
+(= 1 (- 2 1))
+(> 10 9)
+(< 10 9)
+(eq? 1 1)
+;(eqv? a b) ; args are operationally equivalent
+;(equal? a b) ; args have same structure and contents
+
+"Conditional expressions"
+(if (> (length '(1 3 5)) 0) "not empty" "empty")
+(if (> (length '()) 0) "not empty" "empty")
+(cond 
+  ((> (length '(1 3 5)) 0) "not empty")
+  (else "empty"))
+
+"Functions"
+(define (add a b) (+ a b))
+(add 1 2)
+((lambda (a b) (+ a b)) 2 3) ; inline functions; returns a procedure type
+(define square (lambda (x) (* x x))) ; define associates a symbol (square) with an expression (lambda)
+(square 5)
+
+
+"nested definitions"
+; functions let, let*, letrec
+; let* functions have the form (let (assignments) (expression))
+; let - binds in parallel; used for independent variables
+(let ((x 5) (y 2)) (* x y))
+; let* - binds sequentially; allows for dependencies
+(let* ((x 5) (y (+ 2 x))) (* x y))
+; letrec - let recursive; letrec in effect when values being computed to permit mutually recursive definitions
+(letrec ((x 2) (y x)) (* x y))
+
+; letrec is used since insert is defined recursively
+(define isort (lambda (l)
+           (letrec
+              ((insert  (lambda (x l)
+                 (if (null? l)
+                    (list x)
+                    (if (<= x (car l))
+                       (cons x l)
+                       (cons (car l) (insert x (cdr l))))))))
+
+           (if (null? l)
+                   null
+                   (insert (car l) (isort (cdr l)))))))
+(isort '(9 1 5 8 3))
+
+; let can be nested
+(let ((a 3) (b 2)) (let ((double (* 2 a)) (triple (* 3 b)))  (+ double triple)))
+
+"Higher Order functions"
+; a function that either takes a function as parameter or returns a function
+
+; the function 'apply' returns the result of applying its first argument to its second argument
+(apply + '(7 5))
+
+; map applies first argument to each element of 2nd argument
+(map odd? '(1 2 3))
+
+(define (dbl x) (* x 2))
+;(map dbl '( 1 2 3 4))
+
+(map (lambda (x) (* x 2)) '(1 2 3 4))
+
+(min 4 3 1 2)
+(max 1 4 3 2)
+(let ((f 5)) (max pi e))
+(sqrt 2)
+(sin (/ pi 6))
+(exp 1)
+(remainder 7 2)
+(modulo 7 2)
+
+; if in terms of cond
+(define (if2 c1 e1 e2)
+  (begin
+    (display e1)
+    (newline)
+    (cond (c1 e1) (else e2))
+    )) 
+
+;(if (> 3 e) (if2 #t "a" "b") (if2 #t "c" "d"))
+(if2 (> 3 e) (if2 #t "a" "b") (if2 #t "c" "d"))
+
+
+; do we really need if as a special form?  can it be rewritten in terms of cond?
+(define (good-enough? guess x) (< (abs (- (* guess guess) x)) 0.001))
+(define (average x y) (/ (+ x y) 2))
+(define (improve guess x) (average guess (/ x guess)))
+(define (sqrt-iter guess x)
+  (begin
+    (display guess)
+    (display (good-enough? guess x))
+    (newline)
+    (if2 (good-enough? guess x)
+      guess
+      (sqrt-iter (improve guess x) x))))
+;(sqrt-iter 1 2)
+
+;(define (good-enough? guess x) (< (abs (- (* guess guess 1.0) x)) 0.001))
+;(if (good-enough? (/ 665857 470832) 2) (/ 665857 470832) 2)
+;(if2 (good-enough? (/ 665857 470832) 2) (/ 665857 470832) 2)
+
+; string functions
+(string? "abcd")
+(string-length "abcd")
+(string-ref "abcd" 2) ; returns character at index (0-based)
+(substring "apple" 1 3) ; start index (inclusive), end index (exclusive); length of substring = endIdx - startIdx
+(string-append "macbook" " " "air")

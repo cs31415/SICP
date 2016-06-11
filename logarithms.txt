@@ -1,0 +1,31 @@
+A detour to understand logarithms better.
+
+logb x is the power to which b has to be raised to yield x
+e.g.
+log2 8 = 3
+i.e. 2 has to be raised to 3 to yield 8
+
+log2 2 = 1
+log2 4 = 2
+log2 8 = 3
+log2 16 = 4
+
+for each doubling of input, the log function increases by 1 unit
+
+
+Does this hold for a base other than 2, say 10?
+
+log10 10 = 1
+log10 20 = 1.3
+log10 40 = 1.6
+log10 80 = 1.9
+
+So, the doubling rule only holds for base 2.
+
+Rephrasing, we can say that for each multiplication of the input by the base,
+the log function increases by 1 unit.
+
+log10 10 = 1
+log10 100 = 2
+log10 1000 = 3
+log10 10000 = 4

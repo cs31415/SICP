@@ -1,0 +1,9 @@
+(define (map-tree tree func)
+  (cond ((null? tree) null)
+        ((not (list? tree)) (func tree))
+        (else (list (map-tree (car tree) func) 
+                    (map-tree (car (cdr tree)) func)))))
+
+(define tree (list (list 1 2) (list 3 (list 4 5))))
+tree
+(map-tree tree (lambda (x) (* x 10)))
