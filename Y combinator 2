@@ -1,0 +1,42 @@
+;(define (f x)
+;  (if (= x 0)
+;      1
+;      (* x (f (- x 1)))))
+
+(lambda (f)
+  (lambda (x)
+    (if (= x 0)
+        1
+        (* x (f (- x 1))))))
+
+; x is a bound variable w.r.t. the inner lambda.
+; f is a free variable w.r.t. the inner lambda.
+
+(define F 
+  (lambda (f)
+    (lambda (x)
+      (if (= x 0)
+          1
+          (* x (f (- x 1)))))))
+
+; we need to pass a value p into f such that 
+; F(p) = p
+; i.e. p must be a fixed point of F
+
+; Fixed point combinator
+(lambda (f)
+  ((lambda (x) (f (x x)))
+   (lambda (y) (f (y y)))))
+
+; Beta abstraction
+(define Y
+  (lambda (f)
+  ((lambda (x) (f (lambda (a) ((x x) a))))
+   (lambda (y) (f (lambda (a) ((y y) a)))))))
+
+((Y F) 5)
+
+
+
+
+
