@@ -8,3 +8,6 @@
  (hash-table-get h 'key1 (lambda () #f))
  #t
  #f)
+
+
+(reduce + '(1 2 3 4))

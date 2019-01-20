@@ -12,7 +12,7 @@
 
 (define exp '(define x 1))
 (application? exp)
-;#t
+;#t,
 (operator exp)
 ;define
 (operands exp)
