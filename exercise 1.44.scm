@@ -29,14 +29,15 @@
 
 (sin 3)
 ((smooth sin) 3)
+((n-fold-smooth sin 1) 3)
 ((n-fold-smooth sin 100) 3)
 0.1411200080598672
 0.14064999990238003
 0.08307821309221351
 
-(sin 4)
-((smooth sin) 4)
-((n-fold-smooth sin 100) 4)
+;(sin 4)
+;((smooth sin) 4)
+;((n-fold-smooth sin 100) 4)
 -0.7568024953079282
 -0.7542819218521041
 -0.13969630562769877

@@ -34,7 +34,7 @@
   (eq? x false))
 (define apply-in-underlying-scheme apply)
 
-; Environment accessors - TODO 
+; Environment accessors 
 (define (lookup-variable-value var env)
   (define (env-loop env)
     (define (scan vars vals)
@@ -77,8 +77,8 @@
   (if (= (length vars) (length vals))
       (cons (make-frame vars vals) base-env)
       (if (< (length vars) (length vals))
-          (error "Too many arguments supplied" vars vals)
-          (error "Too few arguments supplied" vars vals))))
+          (error "Too many arguments" vars vals)
+          (error "Too few arguments" vars vals))))
 (define (define-variable! var val env)
   (let ((frame (first-frame env)))
     (define (scan vars vals)
@@ -113,9 +113,10 @@
 (define (assignment? exp)
   (tagged-list? exp 'set!))
 (define (eval-assignment exp env)
-  (set-variable-value? (assignment-variable exp)
-                       (eval (assignment-value exp) env)
-                       env)
+  (set-variable-value? 
+   (assignment-variable exp)
+   (eval (assignment-value exp) env)
+   env)
   'ok)
 (define (assignment-variable exp) (cadr exp))
 (define (assignment-value exp) (caddr exp))
@@ -232,7 +233,7 @@
         (if (cond-else-clause? first)
             (if (null? rest)
                 (sequence->exp (cond-actions first))
-                (error "ELSE clause isn't last -- COND->IF"
+                (error "ELSE clause isn't last--COND->IF"
                        clauses))
             (make-if (cond-predicate first)
                      (sequence->exp (cond-actions first))
@@ -254,8 +255,8 @@
 ; application
 (define (application? exp) (pair? exp))
 ; apply
-; primitive procedures are those that have to be implemented
-; by the implementation language
+; primitive procedures are those that have to be 
+; implemented by the implementation language
 (define (apply procedure arguments)
   (cond ((primitive-procedure? procedure)
          (apply-primitive-procedure 
@@ -276,7 +277,9 @@
   (if (no-operands? exps)
       '()
       (cons (eval (first-operand exps) env)
-            (list-of-values (rest-operands exps) env))))
+            (list-of-values 
+             (rest-operands exps) 
+             env))))
 (define (operator exp) (car exp))
 (define (operands exp) (cdr exp))
 (define (no-operands? ops) (null? ops))
@@ -304,14 +307,15 @@
   (apply-in-underlying-scheme
    (primitive-implementation proc) args))
 
-;-----------------------------------------------------------
+;---------------------------------------------------------
 ; Run the metacircular evaluator
-;-----------------------------------------------------------
+;---------------------------------------------------------
 (define (setup-environment)
   (let ((initial-env
-         (extend-environment (primitive-procedure-names)
-                             (primitive-procedure-objects)
-                             the-empty-environment)))
+         (extend-environment 
+          (primitive-procedure-names)
+          (primitive-procedure-objects)
+          the-empty-environment)))
     (define-variable! 'true true initial-env)
     (define-variable! 'false false initial-env)
     initial-env))
