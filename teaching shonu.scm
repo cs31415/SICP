@@ -26,14 +26,14 @@
 (define y 7)
 (* e y)
 
-(define (range n)
-  (if (= n 1)
-      (list 1)
-      (append (range (- n 1)) (list n))))
+(define (range m n)
+  (if (= n m)
+      (list n)
+      (append (range m (- n 1)) (list n))))
 
-(range 10)
+(range 1 10)
 
-(map fibonacci (range 20))
+(map fibonacci (range 1 20))
 
 ; multiplication is repeated addition
 (define (multiply x y)
@@ -78,8 +78,7 @@
 
 (define (quotient x y) (car (divide x y)))
 (define (remainder x y) (cadr (divide x y)))
-
-
+                              
 (define (deconstruct n)
   (define (place x)
     (cond ((= x 1) 'ones)
@@ -97,3 +96,95 @@
   (trydeconstruct n 1))
 
 (deconstruct 2461357)
+
+;(define (factor n)
+;  (define (divisibleby? n m)
+;    (= (/ n m) (floor (/ n m))))
+;  (append () ))
+
+;(divisibleby? 54 2)
+
+;54
+;2 * 27
+;2 * 3 * 9
+;2 * 3 * 3 * 3
+
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+ 
+; The end test for find-divisor is based on the result that if n is non-prime, 
+; it's divisors must be <= sqrt(n)
+; Proof using reduction ad absurdum:
+; if d is a divisor, then n/d is also a divisor. 
+; if the smallest divisor d is greater than sqrt(n), then n/d must be less than 
+; sqrt(n). In other words, there exists a divisor smaller than d. This is a 
+; contradiction.
+; Hence the smallest divisor d can never be greater than sqrt(n).
+; n = 36, d = 4. n/d = 9 which is > sqrt(36).
+ 
+(define (find-divisor n d)
+  (cond ((> (square d) n) n)
+        ((divides? d n) d)
+        (else (find-divisor n (+ d 1)))))
+ 
+(define (divides? d n)
+  (= 0 (remainder n d)))
+ 
+(define (square x) (* x x))
+ 
+(smallest-divisor 2711)
+2711
+ 
+; since find-divisor is called at most sqrt(n) times, this algorithm is 
+; theta(sqrt(n))
+ 
+; smallest-divisor can be used as a prime number detector.  If a number's smallest 
+; divisor is the number itself, then it must be prime.
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+
+;; Creating a secret code
+
+; Hash table definitions
+(define hmap (make-hash-table 'equal))
+(define rmap (make-hash-table 'equal))
+
+(define a (char->integer #\a))
+(define z (char->integer #\z))
+(define A (char->integer #\A))
+(define Z (char->integer #\Z))
+(define punctuation (list #\space #\. #\, #\; #\: #\- #\!))
+(define lower-case-alphabets (range a z))
+(define upper-case-alphabets (range A Z))
+(define (contains? c lst) (not (equal? #f (memv c lst))))
+(define (is-punctuation? c) (contains? c punctuation))
+(define (is-lower-case? c) (contains? c lower-case-alphabets))
+(define (is-upper-case? c) (contains? c upper-case-alphabets))
+
+(define (add-birectional-map-entry hmap rmap k v)
+  (begin
+    (hash-table-put! hmap k v)
+    (hash-table-put! rmap v k)))
+
+(define (generate-secret-code range l u)
+  (for-each (lambda (x) (add-birectional-map-entry hmap rmap x (+ l (modulo (+ (- x l) 2) (+ 1 (- u l))))))
+            range))
+(generate-secret-code lower-case-alphabets a z)
+(generate-secret-code upper-case-alphabets A Z)
+
+(define (translate char-map message)
+  (list->string 
+   (map 
+    (lambda (x) 
+      (if (is-punctuation? x)
+          x
+          (integer->char (hash-table-get char-map (char->integer x))))) 
+    (string->list message))))
+
+(define (encode message) (translate hmap message))
+(define (decode message) (translate rmap message))
+
+(encode "Mahika is my best friend or BFF.")
+(decode (encode "Mahika is my best friend or BFF."))
