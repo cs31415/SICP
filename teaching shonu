@@ -1,6 +1,0 @@
-#!/bin/sh
-# This script was created by make-mzscheme-launcher
-
-bindir="/Applications/PLT Scheme v350/bin"
-
-exec "${bindir}/mzscheme"  -N "$0" '-qmvt' '/Applications/PLT Scheme v350/collects/drscheme/private/launcher-bootstrap.ss' '--' '(module mod-name mzscheme(require(lib "pconvert.ss")(lib "pretty.ss"))(provide init-code)(define(executable-error-value->string-handler val size)(let((o(open-output-string)))(render-value val o)(let((s(get-output-string o)))(if(<=(string-length s)size)s(string-append(substring s 0(- size 3))"...")))))(define(render-value value port)(parameterize((pretty-print-columns(quote infinity)))(pretty-print(convert-value value)port)))(define(convert-value value)value)(require(lib "errortrace.ss" "errortrace"))(define(init-code)(begin(void))(current-inspector(make-inspector))(error-value->string-handler executable-error-value->string-handler)(read-case-sensitive #t)))' '/Users/cs31415/Code/Scheme/teaching shonu.scm' '(lib "plt-mzscheme.ss" "lang")' 'mzscheme' '#t' '(mzscheme)'  ${1+"$@"}
